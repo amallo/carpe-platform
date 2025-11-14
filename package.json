@@ -1,0 +1,27 @@
+{
+  "name": "carpe-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for CARPE Platform - Decentralized messaging system using LoRa and BLE",
+  "workspaces": [
+    "native"
+  ],
+  "scripts": {
+    "native:install": "pnpm --filter carpe-app install",
+    "native:install:ios": "cd native/ios && pod install && cd ../..",
+    "native:install:all": "pnpm --filter carpe-app install && cd native/ios && pod install && cd ../..",
+    "native:start": "pnpm --filter carpe-app start",
+    "native:ios": "pnpm --filter carpe-app ios",
+    "native:android": "pnpm --filter carpe-app android",
+    "native:test": "pnpm --filter carpe-app test",
+    "iot:build": "cd iot && pio run -e carpe-lora",
+    "iot:upload": "cd iot && pio run -e carpe-lora --target upload",
+    "iot:test": "cd iot && make test"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
+

@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PlatformIO
+native/.pio/
+native/.vscode/
+
+# React Native
+iot/android/app/build/
+iot/android/build/
+iot/ios/build/
+iot/ios/Pods/
+iot/ios/*.xcworkspace/xcuserdata/
+iot/ios/*.xcodeproj/xcuserdata/
+
+# Metro
+iot/.metro/
+
+# Fastlane
+iot/fastlane/report.xml
+iot/fastlane/Preview.html
+iot/fastlane/screenshots
+iot/fastlane/test_output
+
+# Bundle artifacts
+*.jsbundle
+
