@@ -7,21 +7,20 @@
     "native"
   ],
   "scripts": {
-    "native:install": "pnpm --filter carpe-app install",
+    "native:install": "cd native && npm install",
     "native:install:ios": "cd native/ios && pod install && cd ../..",
-    "native:install:all": "pnpm --filter carpe-app install && cd native/ios && pod install && cd ../..",
-    "native:start": "pnpm --filter carpe-app start",
-    "native:ios": "pnpm --filter carpe-app ios",
-    "native:android": "pnpm --filter carpe-app android",
-    "native:test": "pnpm --filter carpe-app test",
+    "native:install:all": "cd native && npm install && cd ios && pod install && cd ../..",
+    "native:start": "cd native && npm start",
+    "native:ios": "cd native && npm run ios",
+    "native:android": "cd native && npm run android",
+    "native:test": "cd native && npm test",
     "iot:build": "cd iot && pio run -e carpe-lora",
     "iot:upload": "cd iot && pio run -e carpe-lora --target upload",
     "iot:test": "cd iot && make test"
   },
   "engines": {
     "node": ">=18",
-    "pnpm": ">=8"
-  },
-  "packageManager": "pnpm@8.15.0"
+    "npm": ">=9"
+  }
 }
 
