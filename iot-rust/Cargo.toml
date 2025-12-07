@@ -9,14 +9,17 @@ name = "iot-rust"
 path = "./src/bin/main.rs"
 
 [dependencies]
-esp-hal = { version = "1.0.0", features = ["esp32", "log-04"] }
+esp-hal = { version = "1.0.0", features = ["esp32", "log-04"], optional = true }
 
+esp-bootloader-esp-idf = { version = "0.4.0", features = ["esp32", "log-04"], optional = true }
+log                    = { version = "0.4.27", optional = true }
 
-esp-bootloader-esp-idf = { version = "0.4.0", features = ["esp32", "log-04"] }
-log                    = "0.4.27"
+critical-section = { version = "1.2.0", optional = true }
+esp-println      = { version = "0.16.1", features = ["esp32", "log-04"], optional = true }
 
-critical-section = "1.2.0"
-esp-println      = { version = "0.16.1", features = ["esp32", "log-04"] }
+[features]
+default = ["esp32"]
+esp32 = ["esp-hal", "esp-bootloader-esp-idf", "log", "critical-section", "esp-println"]
 
 
 [profile.dev]

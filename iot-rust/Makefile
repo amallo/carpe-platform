@@ -16,11 +16,11 @@ help: ## Affiche cette aide
 
 build: ## Compile le projet en mode release
 	@echo "$(GREEN)🔨 Compilation du projet...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo build --release"
+	@bash -c "source $$HOME/export-esp.sh && cargo build --release --target xtensa-esp32-none-elf"
 
 dev: ## Compile le projet en mode debug (plus rapide)
 	@echo "$(GREEN)🔨 Compilation du projet (debug)...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo build"
+	@bash -c "source $$HOME/export-esp.sh && cargo build --target xtensa-esp32-none-elf"
 
 flash: build ## Flash le firmware sur l'ESP32
 	@echo "$(GREEN)📤 Flash du firmware sur ESP32...$(NC)"
@@ -34,17 +34,23 @@ clean: ## Nettoie les fichiers de build
 	@echo "$(GREEN)🧹 Nettoyage...$(NC)"
 	@cargo clean
 
-test: ## Lance les tests (si disponibles)
-	@echo "$(GREEN)🧪 Lancement des tests...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo test"
+test: ## Lance les tests unitaires sur Mac (host)
+	@echo "$(GREEN)🧪 Lancement des tests unitaires...$(NC)"
+	@echo "$(YELLOW)Note: Les tests dans #[cfg(test)] sont automatiquement exclus du build release.$(NC)"
+	@echo "$(YELLOW)Pour tester du code dépendant d'ESP32, utilisez des abstractions/traits.$(NC)"
+	@echo ""
+	@echo "$(GREEN)Exécution des tests dans src/lib.rs (sans dépendances ESP32)...$(NC)"
+	@rustup override unset 2>/dev/null || true
+	@RUSTFLAGS="" CARGO_BUILD_RUSTFLAGS="" cargo +stable test --lib --no-default-features 2>&1 | tail -30
+	@rustup override set esp 2>/dev/null || true
 
 check: ## Vérifie le code sans compiler
 	@echo "$(GREEN)✓ Vérification du code...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo check"
+	@bash -c "source $$HOME/export-esp.sh && cargo check --target xtensa-esp32-none-elf"
 
 clippy: ## Lance clippy (linter Rust)
 	@echo "$(GREEN)🔍 Analyse avec clippy...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo clippy -- -D warnings"
+	@bash -c "source $$HOME/export-esp.sh && cargo clippy --target xtensa-esp32-none-elf -- -D warnings"
 
 fmt: ## Formate le code avec rustfmt
 	@echo "$(GREEN)✨ Formatage du code...$(NC)"

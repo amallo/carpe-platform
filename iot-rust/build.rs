@@ -1,7 +1,11 @@
 fn main() {
-    linker_be_nice();
-    // make sure linkall.x is the last linker script (otherwise might cause problems with flip-link)
-    println!("cargo:rustc-link-arg=-Tlinkall.x");
+    // Ne s'exécute que pour le target ESP32, pas pour les tests sur Mac
+    let target = std::env::var("TARGET").unwrap_or_default();
+    if target.contains("xtensa-esp32") || target.contains("riscv32imc-unknown-none-elf") {
+        linker_be_nice();
+        // make sure linkall.x is the last linker script (otherwise might cause problems with flip-link)
+        println!("cargo:rustc-link-arg=-Tlinkall.x");
+    }
 }
 
 fn linker_be_nice() {
