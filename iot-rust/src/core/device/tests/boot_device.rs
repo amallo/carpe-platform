@@ -35,6 +35,6 @@ fn device_boots_and_becomes_ready() {
         runtime.send(Event::PowerOn).await;
         runtime.run_until_idle().await;
 
-        assert!(state.is_ready());
+        assert_eq!(state.device_id(), Some("12324"));
     });
 }

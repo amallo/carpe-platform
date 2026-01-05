@@ -7,6 +7,6 @@ pub struct CommandContext<'a> {
     pub deps: &'a Dependencies<'a>,
 }
 
-pub trait CommandHandler {
-    async fn execute(&self, ctx: &mut CommandContext<'_>) -> Event;
+pub trait CommandHandler<'a> {
+    async fn execute(&self, ctx: &'a CommandContext<'_>) -> Event;
 }

@@ -1,3 +1,3 @@
-pub trait DeviceIdGenerator<'a> {
-    fn generate(&self) -> &'a str;
+pub trait DeviceIdGenerator {
+    fn generate(&self) -> &'static str;
 }

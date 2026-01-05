@@ -1,7 +1,7 @@
 #[derive(PartialEq)]
 pub enum StatusValue {
     Initial,
-    Ready,
+    Ready(&'static str),
 }
 
 pub struct State {
@@ -14,11 +14,18 @@ impl State {
         Self { status: StatusValue::Initial }
     }
     pub fn is_ready(&self) -> bool {
-        self.status == StatusValue::Ready
+        matches!(self.status, StatusValue::Ready(_))
     }
 
-    pub fn set_ready(&mut self) {
-        self.status = StatusValue::Ready;
+    pub fn set_ready(&mut self, device_id: &'static str) {
+        self.status = StatusValue::Ready(device_id);
+    }
+
+    pub fn device_id(&self) -> Option<&'static str> {
+        match &self.status {
+            StatusValue::Ready(id) => Some(id),
+            _ => None,
+        }
     }
 
 }
