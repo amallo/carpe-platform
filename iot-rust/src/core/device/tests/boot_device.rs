@@ -6,6 +6,7 @@ extern crate std;
     
 
 use crate::core::device::gateways::mock_config_storage::MockConfigStorage;
+use crate::core::device::gateways::config_storage::ConfigStorage;
 use crate::core::device::gateways::mock_device_id_generator::MockDeviceIdGenerator;
 use crate::core::runtime::runtime::Runtime;
 use crate::core::runtime::dependencies::Dependencies;
@@ -37,5 +38,30 @@ fn setup_device_first_time() {
 
         assert_eq!(state.device_id(), Some("12324"));
         assert_eq!(*config_storage.device_id.borrow(), "12324");
+    });
+}
+
+#[cfg(test)]
+#[test]
+fn setup_already_setup_device() {
+    use futures::executor::block_on;
+    
+    block_on(async {
+        let config_storage = MockConfigStorage::new();
+        config_storage.save_device_id("1234").ok();
+        let device_id_generator = MockDeviceIdGenerator::new();
+        let deps = Dependencies::new(&config_storage, &device_id_generator);
+        let mut event_queue = TestEventQueue::new();
+        let mut state = State::new();
+        let mut ctx = CommandContext {
+            state: &mut state,
+            deps: &deps,
+        };
+        let mut runtime = Runtime::new(&mut ctx, &mut event_queue);
+
+        runtime.send(Event::PowerOn).await;
+        runtime.run_until_idle().await;
+
+        assert_eq!(state.device_id(), Some("1234"));
     });
 }
