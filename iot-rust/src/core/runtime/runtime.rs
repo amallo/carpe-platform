@@ -1,20 +1,20 @@
 use crate::core::runtime::events::event_queue::EventQueue;
 use crate::core::runtime::events::events::Event;
-use crate::core::runtime::dependencies::Dependencies;
-use crate::core::runtime::state::State;
 use crate::core::runtime::command_handler::{CommandContext, CommandHandler};
 use crate::core::device::commands::setup_device_command::SetupDeviceCommandHandler;
 use crate::core::runtime::events::events::Command;
 use crate::core::device::commands::events::DeviceCommand;
 use crate::core::device::commands::events::DeviceEvent;
+use crate::core::device::gateways::config_storage::ConfigStorage;
+use crate::core::device::gateways::device_id_generator::DeviceIdGenerator;
 use heapless::Vec;
-pub struct Runtime<'a, Q: EventQueue<Event>> {
+pub struct Runtime<'a, Q: EventQueue<Event>, C: ConfigStorage, D: DeviceIdGenerator> {
     queue: &'a mut Q,
-    context: &'a mut CommandContext<'a>,
+    context: &'a mut CommandContext<'a, C, D>,
 }   
 
-impl<'a, Q: EventQueue<Event>> Runtime<'a, Q> {
-    pub fn new(context: &'a mut CommandContext<'a>, queue: &'a mut Q) -> Self {
+impl<'a, Q: EventQueue<Event>, C: ConfigStorage, D: DeviceIdGenerator> Runtime<'a, Q, C, D> {
+    pub fn new(context: &'a mut CommandContext<'a, C, D>, queue: &'a mut Q) -> Self {
         Self { context, queue }
     }
     pub async fn send(&mut self, event: Event) {

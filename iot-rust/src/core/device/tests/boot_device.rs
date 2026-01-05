@@ -48,7 +48,7 @@ fn setup_already_setup_device() {
     
     block_on(async {
         let config_storage = MockConfigStorage::new();
-        config_storage.save_device_id("1234").ok();
+        config_storage.save_device_id("1234").await.ok();
         let device_id_generator = MockDeviceIdGenerator::new();
         let deps = Dependencies::new(&config_storage, &device_id_generator);
         let mut event_queue = TestEventQueue::new();
