@@ -41,7 +41,7 @@ test: ## Lance les tests unitaires sur Mac (host)
 	@echo ""
 	@echo "$(GREEN)Exécution des tests dans src/lib.rs (sans dépendances ESP32)...$(NC)"
 	@rustup override unset 2>/dev/null || true
-	@RUSTFLAGS="" CARGO_BUILD_RUSTFLAGS="" cargo +stable test --lib --no-default-features 2>&1 | tail -30
+	@RUSTFLAGS="" CARGO_BUILD_RUSTFLAGS="" cargo +stable test --lib --no-default-features -- --nocapture --show-output
 	@rustup override set esp 2>/dev/null || true
 
 check: ## Vérifie le code sans compiler
