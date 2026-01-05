@@ -26,9 +26,7 @@ impl<'a, Q: EventQueue<Event>, C: ConfigStorage, D: DeviceIdGenerator> Runtime<'
             Event::PowerOn => {
                 commands.push(Command::DeviceCommand(DeviceCommand::SetupDevice)).ok();
             }
-            Event::DeviceEvent(DeviceEvent::DeviceHasBeenSetup(device_id)) => {
-                self.context.state.set_ready(device_id);
-            }
+            _ => {}
         }
         commands
     }
@@ -38,13 +36,22 @@ impl<'a, Q: EventQueue<Event>, C: ConfigStorage, D: DeviceIdGenerator> Runtime<'
                 Some(event) => event,
                 None => break,
             };
-            let commands = self.decide(event);
-            for cmd in commands {
-                match cmd {
-                    Command::DeviceCommand(DeviceCommand::SetupDevice) => {
-                        let handler = SetupDeviceCommandHandler::new();
-                        let event = handler.execute(&self.context).await;
-                        self.queue.push(event).await;
+            
+            match event {
+                Event::DeviceEvent(DeviceEvent::DeviceHasBeenSetup(device_id)) => {
+                    self.context.state.set_ready(device_id);
+                    continue; 
+                }
+                _ => {
+                    let commands = self.decide(event);
+                    for cmd in commands {
+                        match cmd {
+                            Command::DeviceCommand(DeviceCommand::SetupDevice) => {
+                                let handler = SetupDeviceCommandHandler::new();
+                                let event = handler.execute(&self.context).await;
+                                self.queue.push(event).await;
+                            }
+                        }
                     }
                 }
             }
