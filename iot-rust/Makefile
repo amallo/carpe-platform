@@ -16,11 +16,11 @@ help: ## Affiche cette aide
 
 build: ## Compile le projet en mode release
 	@echo "$(GREEN)🔨 Compilation du projet...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo build --release --target xtensa-esp32-none-elf"
+	@bash -c "source $$HOME/export-esp.sh && cargo +esp build --release --target xtensa-esp32-none-elf -Zbuild-std=core,alloc"
 
 dev: ## Compile le projet en mode debug (plus rapide)
 	@echo "$(GREEN)🔨 Compilation du projet (debug)...$(NC)"
-	@bash -c "source $$HOME/export-esp.sh && cargo build --target xtensa-esp32-none-elf"
+	@bash -c "source $$HOME/export-esp.sh && cargo +esp build --target xtensa-esp32-none-elf -Zbuild-std=core,alloc"
 
 flash: build ## Flash le firmware sur l'ESP32
 	@echo "$(GREEN)📤 Flash du firmware sur ESP32...$(NC)"
