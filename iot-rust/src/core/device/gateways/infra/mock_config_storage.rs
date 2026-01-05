@@ -22,3 +22,4 @@ impl ConfigStorage for MockConfigStorage {
         Ok(*self.device_id.borrow())
     }
 }
+

@@ -5,9 +5,9 @@
 extern crate std;
     
 
-use crate::core::device::gateways::mock_config_storage::MockConfigStorage;
+use crate::core::device::gateways::infra::mock_config_storage::MockConfigStorage;
 use crate::core::device::gateways::config_storage::ConfigStorage;
-use crate::core::device::gateways::mock_device_id_generator::MockDeviceIdGenerator;
+use crate::core::device::gateways::infra::mock_device_id_generator::MockDeviceIdGenerator;
 use crate::core::runtime::runtime::Runtime;
 use crate::core::runtime::dependencies::Dependencies;
 

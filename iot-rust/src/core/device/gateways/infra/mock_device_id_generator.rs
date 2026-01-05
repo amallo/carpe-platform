@@ -21,3 +21,4 @@ impl DeviceIdGenerator for MockDeviceIdGenerator {
         *self.device_id.borrow()
     }
 }
+
