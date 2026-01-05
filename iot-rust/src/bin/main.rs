@@ -15,6 +15,20 @@ use esp_hal::time::{Duration, Instant};
 use log::info;
 
 #[cfg(feature = "esp32")]
+use esp_hal::i2c::master::{Config as I2cConfig, I2c};
+#[cfg(feature = "esp32")]
+use esp_hal::time::Rate;
+#[cfg(feature = "esp32")]
+use ssd1306::{I2CDisplayInterface, Ssd1306, prelude::*};
+#[cfg(feature = "esp32")]
+use embedded_graphics::{
+    mono_font::{ascii::FONT_6X10, MonoTextStyleBuilder},
+    pixelcolor::BinaryColor,
+    prelude::*,
+    text::{Baseline, Text},
+};
+
+#[cfg(feature = "esp32")]
 use linked_list_allocator::LockedHeap;
 
 #[cfg(feature = "esp32")]
@@ -51,7 +65,39 @@ fn main() -> ! {
     esp_println::logger::init_logger_from_env();
 
     let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
-    let _peripherals = esp_hal::init(config);
+    let peripherals = esp_hal::init(config);
+
+    #[cfg(feature = "esp32")]
+    {
+        // Initialiser I2C : SDA=21, SCL=22
+        let i2c_bus = I2c::new(
+            peripherals.I2C0,
+            I2cConfig::default().with_frequency(Rate::from_khz(400)),
+        )
+        .unwrap()
+        .with_scl(peripherals.GPIO22)
+        .with_sda(peripherals.GPIO21);
+
+        // Initialiser l'écran SSD1306 (128x64, adresse 0x3C)
+        let interface = I2CDisplayInterface::new(i2c_bus);
+        let mut display = Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
+            .into_buffered_graphics_mode();
+        display.init().unwrap();
+
+        // Afficher "hello"
+        let text_style = MonoTextStyleBuilder::new()
+            .font(&FONT_6X10)
+            .text_color(BinaryColor::On)
+            .build();
+
+        Text::with_baseline("hello", Point::new(0, 20), text_style, Baseline::Top)
+            .draw(&mut display)
+            .unwrap();
+
+        display.flush().unwrap();
+
+        info!("Message 'hello' affiché sur l'écran OLED");
+    }
 
     loop {
         info!("Hello world!");
