@@ -17,4 +17,8 @@ impl State {
         self.status == StatusValue::Ready
     }
 
+    pub fn set_ready(&mut self) {
+        self.status = StatusValue::Ready;
+    }
+
 }

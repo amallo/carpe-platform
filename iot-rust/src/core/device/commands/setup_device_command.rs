@@ -12,6 +12,7 @@ impl SetupDeviceCommandHandler {
 
 impl CommandHandler for SetupDeviceCommandHandler {
     async fn execute(&self, ctx: &mut CommandContext<'_>) -> Event {
+        ctx.state.set_ready();
         Event::DeviceEvent(DeviceEvent::DeviceHasBeenSetup("DEV_001"))
     }
 }

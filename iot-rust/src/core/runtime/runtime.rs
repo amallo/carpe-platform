@@ -19,9 +19,17 @@ impl<'a, Q: EventQueue<Event>> Runtime<'a, Q> {
     pub async fn send(&mut self, event: Event) {
         self.queue.push(event).await;
     }
-    pub fn decide(&mut self, _event: Event) -> Vec<Command, 1> {
+    pub fn decide(&mut self, event: Event) -> Vec<Command, 1> {
         let mut commands = Vec::new();
-        commands.push(Command::DeviceCommand(DeviceCommand::SetupDevice)).ok(); // .ok() ignore l'erreur si la capacité est atteinte
+        match event {
+            Event::PowerOn => {
+                // Seulement générer SetupDevice pour PowerOn
+                commands.push(Command::DeviceCommand(DeviceCommand::SetupDevice)).ok();
+            }
+            _ => {
+                // Pour les autres événements, ne rien faire
+            }
+        }
         commands
     }
     pub async fn run_until_idle(&mut self) {
