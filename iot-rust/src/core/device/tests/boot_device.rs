@@ -16,7 +16,7 @@ use crate::core::runtime::state::State;
 use crate::core::runtime::command_handler::CommandContext;
 #[cfg(test)]
 #[test]
-fn device_boots_and_becomes_ready() {
+fn setup_device_first_time() {
     use futures::executor::block_on;
     
     block_on(async {
@@ -36,5 +36,6 @@ fn device_boots_and_becomes_ready() {
         runtime.run_until_idle().await;
 
         assert_eq!(state.device_id(), Some("12324"));
+        assert_eq!(*config_storage.device_id.borrow(), "12324");
     });
 }

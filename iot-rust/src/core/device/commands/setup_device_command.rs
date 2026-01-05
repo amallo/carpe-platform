@@ -13,6 +13,7 @@ impl SetupDeviceCommandHandler {
 impl<'a> CommandHandler<'a> for SetupDeviceCommandHandler {
     async fn execute(&self, ctx: &'a CommandContext<'_>) -> Event {
         let device_id = ctx.deps.device_id_generator.generate();
+        ctx.deps.config_store.save_device_id(device_id).ok();
         Event::DeviceEvent(DeviceEvent::DeviceHasBeenSetup(device_id))
     }
 }
