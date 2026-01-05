@@ -1,20 +1,20 @@
 #[derive(PartialEq)]
-pub enum StateValue {
+pub enum StatusValue {
     Initial,
     Ready,
 }
 
 pub struct State {
-    value: StateValue,
+    status: StatusValue,
 }
 
 
 impl State {
     pub fn new() -> Self {
-        Self { value: StateValue::Initial }
+        Self { status: StatusValue::Initial }
     }
     pub fn is_ready(&self) -> bool {
-        self.value == StateValue::Ready
+        self.status == StatusValue::Ready
     }
 
 }
