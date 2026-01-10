@@ -1,0 +1,38 @@
+# Fichiers de build
+firmware.bin
+firmware.elf
+*.bin
+*.elf
+
+# Fichiers Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Couverture de code
+coverage.out
+coverage.html
+
+# Répertoires
+vendor/
+build/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TinyGo
+tinygo/
