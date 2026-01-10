@@ -25,6 +25,19 @@ This project follows a **strict engineering posture**. Any AI assistance must co
 
 ---
 
+# Module Structure
+
+* The `core` module contains the **heart of the hexagon**.
+* The `core/xxx` directories are **modules**.
+* Each module contains **abstractions grouped in directories**.
+* Abstraction directories (e.g., `gateways`) contain:
+  * The **interfaces** of the hexagon core
+  * Their **implementations** in an `infra` subdirectory
+* Behaviors are described in the **`commands` directory** of a module.
+* Behaviors are described by **commands**.
+
+---
+
 ## State & Logic
 
 * State is explicit and modeled with enums and structs.

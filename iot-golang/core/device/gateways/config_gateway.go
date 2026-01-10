@@ -1,10 +1,6 @@
 package gateways
 
 type ConfigGateway interface {
-	GetDeviceID() string
-	SetDeviceID(deviceID string)
-}
-
-type ConfigGatewayImpl struct {
-	deviceID string
+	GetDeviceID() (string, error)
+	SetDeviceID(deviceID string) error
 }
