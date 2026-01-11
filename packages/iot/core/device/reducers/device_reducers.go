@@ -11,10 +11,10 @@ func ReduceDeviceEvents(event core.Event[any], state *core.State) *core.State {
 		state.Status = core.DeviceStatusReady
 		return state
 	case core.DeviceIdGenerationFailed:
-		state.Status = core.DeviceStatusError
+		state.Status = core.DeviceStatusErrorCannotGenerateDeviceId
 		return state
 	case core.ConfigGatewayError:
-		state.Status = core.DeviceStatusError
+		state.Status = core.DeviceStatusErrorConfigGateway
 		return state
 	default:
 		// Ne réagit pas à cet événement

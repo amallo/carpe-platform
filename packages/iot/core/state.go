@@ -4,9 +4,10 @@ package core
 type DeviceStatus string
 
 const (
-	DeviceStatusInitializing DeviceStatus = "initializing"
-	DeviceStatusReady        DeviceStatus = "ready"
-	DeviceStatusError        DeviceStatus = "error"
+	DeviceStatusInitializing                DeviceStatus = "initializing"
+	DeviceStatusReady                       DeviceStatus = "ready"
+	DeviceStatusErrorCannotGenerateDeviceId DeviceStatus = "error001"
+	DeviceStatusErrorConfigGateway          DeviceStatus = "error002"
 )
 
 // State représente l'état global de l'application
@@ -20,4 +21,3 @@ func NewState() *State {
 		Status: DeviceStatusInitializing,
 	}
 }
-

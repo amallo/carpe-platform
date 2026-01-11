@@ -42,4 +42,23 @@ func TestSetupDeviceThatwasAlreadySetup(t *testing.T) {
 		ThenAssertStatus(t, core.DeviceStatusReady)
 }
 
+// TestSetupDeviceWhenDeviceIdGenerationFails teste le cas où la génération du device ID échoue
+func TestSetupDeviceWhenDeviceIdGenerationFails(t *testing.T) {
+	helper := NewTestHelper()
+
+	// Given: État initial avec générateur configuré pour échouer
+	helper.GivenWillFailToGenerateDeviceId(t, "failed to generate device ID").
+		ThenAssertInitialStatus(t)
+
+	// When: Action déclenchante
+	helper.WhenPowerOn(t)
+
+	// Then: Vérifications
+	helper.
+		ThenAssertStatus(t, core.DeviceStatusErrorCannotGenerateDeviceId)
+
+	// Vérifier que le device ID n'a pas été configuré
+	helper.ThenAssertDeviceIDWasConfigured(t, "")
+}
+
 // TestBoot teste le démarrage du device

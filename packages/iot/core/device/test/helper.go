@@ -3,6 +3,7 @@
 package test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/carpe-platform/iot-golang/core"
@@ -50,6 +51,19 @@ func (h *TestHelper) GivenWithExistingDevice(t *testing.T, existingDeviceID stri
 	if err != nil {
 		t.Fatalf("Failed to setup existing deviceID: %v", err)
 	}
+	return h
+}
+
+func (h *TestHelper) GivenWillFailToGenerateDeviceId(t *testing.T, errorMessage string) *TestHelper {
+	t.Helper()
+	h.state = core.NewState()
+	h.configGateway = device_gateways.NewFakeConfigGateway()
+	h.deviceIdGenerator = device_generators.NewFakeDeviceIdGenerator()
+	h.dependencies = &core.Dependencies{
+		ConfigGateway:     h.configGateway,
+		DeviceIdGenerator: h.deviceIdGenerator,
+	}
+	h.deviceIdGenerator.WillFailWithError(errors.New(errorMessage))
 	return h
 }
 
