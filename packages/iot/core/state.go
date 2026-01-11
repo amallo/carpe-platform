@@ -6,6 +6,7 @@ type DeviceStatus string
 const (
 	DeviceStatusInitializing DeviceStatus = "initializing"
 	DeviceStatusReady        DeviceStatus = "ready"
+	DeviceStatusError        DeviceStatus = "error"
 )
 
 // State représente l'état global de l'application

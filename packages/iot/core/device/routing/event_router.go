@@ -6,10 +6,10 @@ import (
 )
 
 // RouteEvent route un événement vers la commande appropriée du module device
-func RouteEvent(event core.Event[any], deps *core.Dependencies, state *core.State) core.Command {
+func RouteEvent(event core.Event[any], deps *core.Dependencies) core.Command {
 	switch event.Type {
 	case core.PowerOn:
-		return commands.NewSetupDeviceCommand(deps, state)
+		return commands.NewSetupDeviceCommand(deps)
 	default:
 		return nil
 	}

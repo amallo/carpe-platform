@@ -8,6 +8,7 @@ import (
 	"github.com/carpe-platform/iot-golang/core"
 	device_gateways "github.com/carpe-platform/iot-golang/core/device/gateways/infra"
 	device_generators "github.com/carpe-platform/iot-golang/core/device/generators/infra"
+	device_reducers "github.com/carpe-platform/iot-golang/core/device/reducers"
 	device_routing "github.com/carpe-platform/iot-golang/core/device/routing"
 )
 
@@ -54,7 +55,10 @@ func (h *TestHelper) GivenWithExistingDevice(t *testing.T, existingDeviceID stri
 
 func (h *TestHelper) WhenPowerOn(t *testing.T) *TestHelper {
 	t.Helper()
-	h.runtime = core.NewRuntime(h.state, h.dependencies, device_routing.RouteEvent)
+	reducers := []core.EventReducer{
+		device_reducers.ReduceDeviceEvents,
+	}
+	h.runtime = core.NewRuntime(h.state, h.dependencies, device_routing.RouteEvent, reducers)
 	h.runtime.Send(core.Event[any]{
 		Type: core.PowerOn,
 	})

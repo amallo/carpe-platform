@@ -4,40 +4,46 @@ import "github.com/carpe-platform/iot-golang/core"
 
 type SetupDeviceCommand struct {
 	dependencies *core.Dependencies
-	state        *core.State
 }
 
-func NewSetupDeviceCommand(dependencies *core.Dependencies, state *core.State) *SetupDeviceCommand {
+func NewSetupDeviceCommand(dependencies *core.Dependencies) *SetupDeviceCommand {
 	return &SetupDeviceCommand{
 		dependencies: dependencies,
-		state:        state,
 	}
 }
 
-func (c *SetupDeviceCommand) Execute() error {
+func (c *SetupDeviceCommand) Execute() []core.Event[any] {
 	// Check if a deviceID already exists
 	existingDeviceID, err := c.dependencies.ConfigGateway.GetDeviceID()
 	if err != nil {
-		return err
+		return []core.Event[any]{
+			{Type: core.ConfigGatewayError, Payload: err.Error()},
+		}
 	}
 
 	if existingDeviceID != "" {
 		// Device already configured: reuse existing deviceID
-		c.state.Status = core.DeviceStatusReady
-		return nil
+		return []core.Event[any]{
+			{Type: core.DeviceReady, Payload: nil},
+		}
 	}
 
 	// Device not configured: generate a new deviceID
 	deviceID, err := c.dependencies.DeviceIdGenerator.GenerateDeviceID()
 	if err != nil {
-		return err
+		return []core.Event[any]{
+			{Type: core.DeviceIdGenerationFailed, Payload: err.Error()},
+		}
 	}
 
 	err = c.dependencies.ConfigGateway.SetDeviceID(deviceID)
 	if err != nil {
-		return err
+		return []core.Event[any]{
+			{Type: core.ConfigGatewayError, Payload: err.Error()},
+		}
 	}
 
-	c.state.Status = core.DeviceStatusReady
-	return nil
+	return []core.Event[any]{
+		{Type: core.DeviceReady, Payload: nil},
+	}
 }
