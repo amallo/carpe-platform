@@ -17,34 +17,13 @@ type TestHelper struct {
 	deviceIdGenerator *device_generators.FakeDeviceIdGenerator
 	dependencies      *core.Dependencies
 	runtime           *core.Runtime
-
-	deviceID         string
-	existingDeviceID string
-	expectedStatus   core.DeviceStatus
 }
 
 func NewTestHelper() *TestHelper {
-	return &TestHelper{
-		expectedStatus: core.DeviceStatusReady,
-	}
+	return &TestHelper{}
 }
 
-func (h *TestHelper) WithDeviceID(deviceID string) *TestHelper {
-	h.deviceID = deviceID
-	return h
-}
-
-func (h *TestHelper) WithExistingDeviceID(deviceID string) *TestHelper {
-	h.existingDeviceID = deviceID
-	return h
-}
-
-func (h *TestHelper) WithExpectedStatus(status core.DeviceStatus) *TestHelper {
-	h.expectedStatus = status
-	return h
-}
-
-func (h *TestHelper) Given(t *testing.T) *TestHelper {
+func (h *TestHelper) GivenWillGenerateDeviceId(t *testing.T, deviceID string) *TestHelper {
 	t.Helper()
 	h.state = core.NewState()
 	h.configGateway = device_gateways.NewFakeConfigGateway()
@@ -53,20 +32,22 @@ func (h *TestHelper) Given(t *testing.T) *TestHelper {
 		ConfigGateway:     h.configGateway,
 		DeviceIdGenerator: h.deviceIdGenerator,
 	}
-	if h.deviceID != "" {
-		h.deviceIdGenerator.WillGenerateDeviceID(h.deviceID)
-	}
+	h.deviceIdGenerator.WillGenerateDeviceID(deviceID)
 	return h
 }
 
-func (h *TestHelper) GivenWithExistingDevice(t *testing.T) *TestHelper {
+func (h *TestHelper) GivenWithExistingDevice(t *testing.T, existingDeviceID string) *TestHelper {
 	t.Helper()
-	h.Given(t)
-	if h.existingDeviceID != "" {
-		err := h.configGateway.SetDeviceID(h.existingDeviceID)
-		if err != nil {
-			t.Fatalf("Failed to setup existing deviceID: %v", err)
-		}
+	h.state = core.NewState()
+	h.configGateway = device_gateways.NewFakeConfigGateway()
+	h.deviceIdGenerator = device_generators.NewFakeDeviceIdGenerator()
+	h.dependencies = &core.Dependencies{
+		ConfigGateway:     h.configGateway,
+		DeviceIdGenerator: h.deviceIdGenerator,
+	}
+	err := h.configGateway.SetDeviceID(existingDeviceID)
+	if err != nil {
+		t.Fatalf("Failed to setup existing deviceID: %v", err)
 	}
 	return h
 }
@@ -89,26 +70,22 @@ func (h *TestHelper) ThenAssertInitialStatus(t *testing.T) *TestHelper {
 	return h
 }
 
-func (h *TestHelper) ThenAssertDeviceID(t *testing.T) *TestHelper {
+func (h *TestHelper) ThenAssertDeviceIDWasConfigured(t *testing.T, expectedDeviceID string) *TestHelper {
 	t.Helper()
-	expectedID := h.deviceID
-	if h.existingDeviceID != "" {
-		expectedID = h.existingDeviceID
-	}
 	savedDeviceID, err := h.configGateway.GetDeviceID()
 	if err != nil {
 		t.Fatalf("Failed to get deviceID from ConfigGateway: %v", err)
 	}
-	if savedDeviceID != expectedID {
-		t.Errorf("ConfigGateway.DeviceID = %q, want %q", savedDeviceID, expectedID)
+	if savedDeviceID != expectedDeviceID {
+		t.Errorf("ConfigGateway.DeviceID = %q, want %q", savedDeviceID, expectedDeviceID)
 	}
 	return h
 }
 
-func (h *TestHelper) ThenAssertStatus(t *testing.T) *TestHelper {
+func (h *TestHelper) ThenAssertStatus(t *testing.T, expectedStatus core.DeviceStatus) *TestHelper {
 	t.Helper()
-	if h.state.Status != h.expectedStatus {
-		t.Errorf("State.Status = %q, want %q", h.state.Status, h.expectedStatus)
+	if h.state.Status != expectedStatus {
+		t.Errorf("State.Status = %q, want %q", h.state.Status, expectedStatus)
 	}
 	return h
 }
