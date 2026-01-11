@@ -14,4 +14,3 @@ func RouteEvent(event core.Event[any], deps *core.Dependencies, state *core.Stat
 		return nil
 	}
 }
-

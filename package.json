@@ -4,19 +4,19 @@
   "private": true,
   "description": "Monorepo for CARPE Platform - Decentralized messaging system using LoRa and BLE",
   "workspaces": [
-    "native"
+    "packages/*"
   ],
   "scripts": {
-    "native:install": "cd native && npm install",
-    "native:install:ios": "cd native/ios && pod install && cd ../..",
-    "native:install:all": "cd native && npm install && cd ios && pod install && cd ../..",
-    "native:start": "cd native && npm start",
-    "native:ios": "cd native && npm run ios",
-    "native:android": "cd native && npm run android",
-    "native:test": "cd native && npm test",
-    "iot:build": "cd iot && pio run -e carpe-lora",
-    "iot:upload": "cd iot && pio run -e carpe-lora --target upload",
-    "iot:test": "cd iot && make test"
+    "native:install": "cd packages/native && npm install",
+    "native:install:ios": "cd packages/native/ios && pod install && cd ../..",
+    "native:install:all": "cd packages/native && npm install && cd ios && pod install && cd ../../..",
+    "native:start": "cd packages/native && npm start",
+    "native:ios": "cd packages/native && npm run ios",
+    "native:android": "cd packages/native && npm run android",
+    "native:test": "cd packages/native && npm test",
+    "iot:build": "cd packages/iot && pio run -e carpe-lora",
+    "iot:upload": "cd packages/iot && pio run -e carpe-lora --target upload",
+    "iot:test": "cd packages/iot && make test"
   },
   "engines": {
     "node": ">=18",

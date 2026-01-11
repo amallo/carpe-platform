@@ -6,8 +6,11 @@ Monorepo pour la plateforme CARPE - un système de messagerie décentralisé uti
 
 ```
 carpe-platform/
-├── iot/             # Module ESP32 (firmware embarqué)
-└── native/          # Application mobile React Native
+├── packages/
+│   ├── iot/         # Module ESP32 (firmware embarqué)
+│   └── native/      # Application mobile React Native
+├── package.json     # Configuration npm workspaces
+└── package-lock.json
 ```
 
 ## 🎯 Projets
@@ -22,11 +25,11 @@ Firmware ESP32 implémentant l'authentification peer-to-peer sécurisée via BLE
 - ESP32 (Arduino framework)
 - NimBLE-Arduino
 
-**Documentation :** Voir [`iot/README.md`](iot/README.md)
+**Documentation :** Voir [`packages/iot/README.md`](packages/iot/README.md)
 
 **Commandes principales :**
 ```bash
-cd iot
+cd packages/iot
 pio run -e carpe-lora          # Build
 pio run -e carpe-lora --target upload  # Upload
 make test                      # Tests natifs
@@ -42,20 +45,20 @@ Application mobile React Native pour iOS et Android permettant de se connecter a
 - Redux Toolkit
 - React Navigation
 
-**Documentation :** Voir [`native/README.md`](native/README.md)
+**Documentation :** Voir [`packages/native/README.md`](packages/native/README.md)
 
 **Commandes principales :**
 ```bash
 # Depuis la racine du monorepo
-pnpm native:start                 # Démarrer Metro bundler
-pnpm native:ios                   # Lancer sur iOS
-pnpm native:android               # Lancer sur Android
+npm run native:start                 # Démarrer Metro bundler
+npm run native:ios                   # Lancer sur iOS
+npm run native:android               # Lancer sur Android
 
-# Ou depuis native/
-cd native
-pnpm start                     # Démarrer Metro bundler
-pnpm ios                       # Lancer sur iOS
-pnpm android                   # Lancer sur Android
+# Ou depuis packages/native/
+cd packages/native
+npm start                     # Démarrer Metro bundler
+npm run ios                       # Lancer sur iOS
+npm run android                   # Lancer sur Android
 ```
 
 ## 🚀 Getting Started
@@ -68,7 +71,7 @@ pnpm android                   # Lancer sur Android
 
 **Pour `native/` :**
 - Node.js >= 18
-- pnpm >= 8 (gestionnaire de paquets recommandé pour le monorepo)
+- npm >= 9 (gestionnaire de paquets pour le monorepo)
 - React Native CLI
 - Xcode (pour iOS)
 - Android Studio (pour Android)
@@ -80,20 +83,17 @@ pnpm android                   # Lancer sur Android
 git clone <repository-url> carpe-platform
 cd carpe-platform
 
-# Installer pnpm si ce n'est pas déjà fait
-npm install -g pnpm
-
 # Installer toutes les dépendances du monorepo
-pnpm install
+npm install
 
 # Installer les dépendances du module IoT
-cd iot
+cd packages/iot
 # PlatformIO installera automatiquement les dépendances au premier build
 
 # Pour iOS uniquement
 cd ../native/ios
 pod install
-cd ../..
+cd ../../..
 ```
 
 ### Commandes du monorepo
@@ -102,23 +102,23 @@ Depuis la racine du monorepo, vous pouvez utiliser :
 
 ```bash
 # Commandes pour native/ (app mobile)
-pnpm native:install      # Installer les dépendances
-pnpm native:start        # Démarrer Metro bundler
-pnpm native:ios          # Lancer sur iOS
-pnpm native:android      # Lancer sur Android
-pnpm native:test         # Lancer les tests
+npm run native:install      # Installer les dépendances
+npm run native:start        # Démarrer Metro bundler
+npm run native:ios          # Lancer sur iOS
+npm run native:android      # Lancer sur Android
+npm run native:test         # Lancer les tests
 
 # Commandes pour iot/ (firmware ESP32)
-pnpm iot:build     # Build le firmware
-pnpm iot:upload    # Upload vers l'ESP32
-pnpm iot:test      # Lancer les tests natifs
+npm run iot:build     # Build le firmware
+npm run iot:upload    # Upload vers l'ESP32
+npm run iot:test      # Lancer les tests natifs
 ```
 
 ## 🏗️ Architecture
 
 ### Communication Protocol
 
-Les deux projets partagent le même protocole de communication binaire documenté dans [`iot/protocol.md`](iot/protocol.md).
+Les deux projets partagent le même protocole de communication binaire documenté dans [`packages/iot/protocol.md`](packages/iot/protocol.md).
 
 ### Séparation des responsabilités
 
@@ -127,10 +127,10 @@ Les deux projets partagent le même protocole de communication binaire document�
 
 ## 📚 Documentation
 
-- **Protocole de communication :** [`iot/protocol.md`](iot/protocol.md)
-- **Module IoT :** [`iot/README.md`](iot/README.md)
-- **Application mobile :** [`native/README.md`](native/README.md)
-- **Whitepaper technique :** [`native/CARPEAPP_WHITEPAPER.md`](native/CARPEAPP_WHITEPAPER.md)
+- **Protocole de communication :** [`packages/iot/protocol.md`](packages/iot/protocol.md)
+- **Module IoT :** [`packages/iot/README.md`](packages/iot/README.md)
+- **Application mobile :** [`packages/native/README.md`](packages/native/README.md)
+- **Whitepaper technique :** [`packages/native/CARPEAPP_WHITEPAPER.md`](packages/native/CARPEAPP_WHITEPAPER.md)
 
 ## 🔧 Développement
 
@@ -144,33 +144,30 @@ Les deux projets partagent le même protocole de communication binaire document�
 
 ```bash
 # Tests du module IoT (desktop, rapide)
-cd iot
+cd packages/iot
 make test
 
 # Tests de l'app mobile
-pnpm native:test
-# Ou depuis native/
-cd native && pnpm test
+npm run native:test
+# Ou depuis packages/native/
+cd packages/native && npm test
 ```
 
 ## 📦 Gestion des dépendances
 
-Ce monorepo utilise **pnpm workspaces** pour gérer les dépendances JavaScript/TypeScript. 
+Ce monorepo utilise **npm workspaces** pour gérer les dépendances JavaScript/TypeScript. 
 
-**Avantages de pnpm :**
-- ⚡ Plus rapide que npm/yarn
-- 💾 Plus efficace en espace disque (liens symboliques)
-- 🎯 Meilleur pour les monorepos
-- 🔒 Installation plus sécurisée (pas de dépendances fantômes)
-
-**Migration :** Le projet a été migré de npm vers pnpm. Voir [`MIGRATION_PNPM.md`](MIGRATION_PNPM.md) pour les détails.
+**Structure :**
+- Les packages sont organisés dans le dossier `packages/`
+- `packages/native/` : Application React Native (géré par npm)
+- `packages/iot/` : Firmware Go/ESP32 (géré par PlatformIO)
 
 ## 📝 Notes
 
-- Les deux projets sont des repositories Git indépendants
+- Les deux projets sont organisés dans le dossier `packages/`
 - Le protocole de communication est partagé entre les deux projets
-- Les changements de protocole doivent être synchronisés entre `iot/` et `native/`
-- Le monorepo utilise pnpm workspaces pour `native/`, tandis que `iot/` utilise PlatformIO
+- Les changements de protocole doivent être synchronisés entre `packages/iot/` et `packages/native/`
+- Le monorepo utilise npm workspaces pour `packages/native/`, tandis que `packages/iot/` utilise PlatformIO/Go
 
 ## 🤝 Contribution
 

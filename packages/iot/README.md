@@ -265,7 +265,7 @@ Utilisez `make monitor` pour voir les sorties `println()` et les logs.
 - [Documentation TinyGo](https://tinygo.org/docs/)
 - [TinyGo Drivers](https://github.com/tinygo-org/drivers)
 - [ESP32 avec TinyGo](https://tinygo.org/microcontrollers/esp32/)
-- [Protocol CARPE](../iot/protocol.md)
+- [Protocol CARPE](./protocol.md)
 
 ## 🤝 Contribution
 
