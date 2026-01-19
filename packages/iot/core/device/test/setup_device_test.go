@@ -61,4 +61,18 @@ func TestSetupDeviceWhenDeviceIdGenerationFails(t *testing.T) {
 	helper.ThenAssertDeviceIDWasConfigured(t, "")
 }
 
+// TestBluetoothAdvertisingStartsWhenDeviceReady teste que l'advertising Bluetooth démarre quand le device devient ready
+func TestBluetoothAdvertisingStartsWhenDeviceReady(t *testing.T) {
+	helper := NewTestHelper()
+
+	// Given: Device configuré
+	helper.GivenWithExistingDevice(t, "carpe-1234")
+
+	// When: Device devient ready
+	helper.WhenDeviceReady(t)
+
+	// Then: Advertising a démarré
+	helper.ThenAssertBluetoothAdvertisingStarted(t)
+}
+
 // TestBoot teste le démarrage du device

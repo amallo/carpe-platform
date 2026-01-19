@@ -7,16 +7,16 @@ type Runtime struct {
 	state        *State
 	dependencies *Dependencies
 	eventQueue   chan Event[any]
-	router       EventRouter
+	routers      []EventRouter  // Liste de tous les routers de tous les modules
 	reducers     []EventReducer // Liste de tous les reducers de tous les modules
 }
 
-func NewRuntime(state *State, dependencies *Dependencies, router EventRouter, reducers []EventReducer) *Runtime {
+func NewRuntime(state *State, dependencies *Dependencies, routers []EventRouter, reducers []EventReducer) *Runtime {
 	return &Runtime{
 		state:        state,
 		dependencies: dependencies,
 		eventQueue:   make(chan Event[any], 100), // Buffer de 100 événements
-		router:       router,
+		routers:      routers,
 		reducers:     reducers,
 	}
 }
@@ -48,12 +48,17 @@ func (r *Runtime) RunUntilIdle() {
 }
 
 func (r *Runtime) handleEvent(event Event[any]) {
-	cmd := r.router(event, r.dependencies)
-	if cmd != nil {
-		events := cmd.Execute()
-		// Pour chaque événement retourné, passer par tous les reducers
-		for _, evt := range events {
-			r.applyReducers(evt)
+	// Essayer chaque router jusqu'à trouver une commande
+	for _, router := range r.routers {
+		cmd := router(event, r.dependencies)
+		if cmd != nil {
+			events := cmd.Execute()
+			// Pour chaque événement retourné, passer par tous les reducers
+			for _, evt := range events {
+				r.applyReducers(evt)
+			}
+			// Une fois qu'on a trouvé une commande, on arrête (ou on pourrait continuer pour permettre plusieurs commandes)
+			break
 		}
 	}
 }
